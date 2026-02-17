@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're In! - Discovered: Bag the Meta</title>
+    <style>
+        /* filename: thanks.html */
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #5E35B1 0%, #1A237E 60%, #0D1442 100%);
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 100px;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Vignette Effect */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
+        }
+
+        header .event-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Success Hero */
+        .success-hero {
+            background: linear-gradient(180deg, #00C853 0%, #00897B 100%);
+            color: white;
+            padding: 44px 28px;
+            border-radius: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.45),
+                inset 0 3px 6px rgba(255, 255, 255, 0.2);
+            outline: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .success-hero h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.1;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-hero .rid {
+            font-size: 13px;
+            opacity: 0.95;
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 18px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Card */
+        .card {
+            background: linear-gradient(180deg, #1E88E5 0%, #1565C0 100%);
+            border-radius: 24px;
+            padding: 28px 24px;
+            margin-bottom: 20px;
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.35),
+                inset 0 2px 4px rgba(255, 255, 255, 0.15);
+            outline: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h4 {
+            color: #ffffff;
+        }
+
+        .card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Registration Summary */
+        .summary {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            font-weight: 700;
+            color: #00E5FF;
+        }
+
+        .summary-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Scoring List */
+        .scoring-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .scoring-list li {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Bonus Callout */
+        .bonus-callout {
+            background: linear-gradient(180deg, #FFD54F 0%, #FF9800 100%);
+            border-radius: 24px;
+            padding: 28px;
+            margin: 24px 0;
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.35),
+                inset 0 2px 4px rgba(255, 255, 255, 0.25);
+            outline: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bonus-callout h4 {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .bonus-callout p {
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 18px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 18px 36px;
+            font-size: 18px;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 24px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-bonus {
+            background: linear-gradient(180deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
+            width: 100%;
+            box-shadow:
+                0 8px 0 rgba(0, 0, 0, 0.2),
+                0 12px 25px rgba(0, 0, 0, 0.3),
+                inset 0 4px 6px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-bonus:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 0 rgba(0, 0, 0, 0.2),
+                0 16px 30px rgba(0, 0, 0, 0.4),
+                inset 0 4px 6px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-bonus:active {
+            transform: translateY(4px);
+            box-shadow:
+                0 4px 0 rgba(0, 0, 0, 0.2),
+                0 6px 12px rgba(0, 0, 0, 0.3),
+                inset 0 4px 6px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Note Box */
+        .note-box {
+            background: rgba(0, 229, 255, 0.15);
+            border-left: 4px solid #00E5FF;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .note-box p {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Start Over Link */
+        .start-over {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .start-over a {
+            color: #00E5FF;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .start-over a:hover {
+            color: #ffffff;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+
+        /* Sticky CTA for Mobile */
+        .sticky-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(13, 20, 66, 0.95) 0%, rgba(13, 20, 66, 1) 100%);
+            padding: 16px 20px;
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+            display: block;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .sticky-cta .btn {
+            width: 100%;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            .sticky-cta {
+                display: none;
+            }
+
+            body {
+                padding-bottom: 40px;
+            }
+        }
+
+        /* Error State */
+        .error-state {
+            background: linear-gradient(180deg, #E53935 0%, #C62828 100%);
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.35),
+                inset 0 2px 4px rgba(255, 255, 255, 0.15);
+            outline: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .error-state h3 {
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .error-state p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+
+        .error-state a {
+            color: #FFD54F;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .error-state a:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 480px) {
+            .success-hero {
+                padding: 36px 20px;
+                border-radius: 24px;
+            }
+
+            .success-hero h2 {
+                font-size: 34px;
+            }
+
+            .card {
+                padding: 24px 20px;
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Effects -->
+    <div class="vignette"></div>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="container">
+            <h1>Discovered: Bag the Meta</h1>
+            <div class="event-info">IFA 2026 • Feb 23–25 • Mandalay Bay, Las Vegas</div>
+        </div>
+    </header>
+
+    <main class="container" id="mainContent">
+        <!-- Content will be populated by JavaScript -->
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Discovered: Bag the Meta. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Sticky CTA for Mobile -->
+    <div class="sticky-cta" id="stickyCTA" style="display: none;">
+        <a href="#" class="btn btn-bonus" id="stickyBonusBtn">Get My Ticket Bonus</a>
+    </div>
+
+    <script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 25;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particle.style.width = (2 + Math.random() * 4) + 'px';
+            particle.style.height = particle.style.width;
+            particlesContainer.appendChild(particle);
+        }
+
+        // Get registration ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const rid = urlParams.get('rid');
+        const mainContent = document.getElementById('mainContent');
+        const stickyCTA = document.getElementById('stickyCTA');
+
+        // Bonus button link (placeholder - can be updated to actual Calendly or booking link)
+        const bonusLink = '#'; // Replace with actual booking link
+
+        // Check if registration data exists
+        let registrationData = null;
+        try {
+            const storedData = localStorage.getItem('ifa2026_registration');
+            if (storedData) {
+                registrationData = JSON.parse(storedData);
+            }
+        } catch (error) {
+            console.error('Error reading registration data:', error);
+        }
+
+        // Function to start over
+        function startOver() {
+            if (confirm('Are you sure you want to start over? This will clear your registration data.')) {
+                localStorage.removeItem('ifa2026_registration');
+                localStorage.removeItem('ifa2026_rid');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Render success page
+        if (rid && registrationData) {
+            mainContent.innerHTML = `
+        <!-- Success Hero -->
+        <section class="success-hero">
+          <div class="success-icon">🎉</div>
+          <h2>You're In!</h2>
+          <div class="rid">Registration ID: ${rid}</div>
+        </section>
+
+        <!-- Registration Summary -->
+        <section class="card">
+          <h3>Registration Confirmed</h3>
+          <p>Welcome, ${registrationData.firstName} ${registrationData.lastName}!</p>
+          <div class="summary">
+            <div class="summary-item">
+              <span class="summary-label">Name:</span>
+              <span class="summary-value">${registrationData.firstName} ${registrationData.lastName}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Email:</span>
+              <span class="summary-value">${registrationData.email}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Company:</span>
+              <span class="summary-value">${registrationData.company}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- What's Unlocked -->
+        <section class="card">
+          <h3>What You Just Unlocked</h3>
+          <p><strong>✅ Unlimited DISC assessments</strong> for your team.</p>
+          <p><strong>✅ This registration includes 3 cornhole attempts.</strong></p>
+          
+          <h4 style="margin-top: 20px; margin-bottom: 12px; font-size: 18px;">Scoring:</h4>
+          <ul class="scoring-list">
+            <li>🎯 Bag in hole = +10 tickets</li>
+            <li>🎲 Board hit = +5 tickets</li>
+            <li>❌ Miss = +0 tickets</li>
+          </ul>
+        </section>
+
+        <!-- Bonus Callout -->
+        <div class="bonus-callout">
+          <h4>🎁 Get +15 Bonus Tickets</h4>
+          <p>Book your free DISC onboarding session to earn an extra 15 tickets (once per email).</p>
+          <a href="${bonusLink}" class="btn btn-bonus">Get My Ticket Bonus</a>
+        </div>
+
+        <!-- Next Steps -->
+        <section class="card">
+          <h3>Next Steps</h3>
+          <div class="note-box">
+            <p>📍 Go to the cornhole station and tell our team your name/email to play!</p>
+          </div>
+          <p style="margin-top: 16px; font-size: 14px; color: rgba(255,255,255,0.7);">
+            <strong>Live Draw:</strong> Feb 25, 2026 @ 3:30 PM • Booth 452
+          </p>
+        </section>
+
+        <!-- Start Over -->
+        <div class="start-over">
+          <a href="#" onclick="startOver(); return false;">Start Over</a>
+        </div>
+      `;
+
+            // Show sticky CTA
+            stickyCTA.style.display = 'block';
+            document.getElementById('stickyBonusBtn').href = bonusLink;
+
+        } else {
+            // Error state - no registration found
+            mainContent.innerHTML = `
+        <div class="error-state">
+          <h3>Registration Not Found</h3>
+          <p>We couldn't find your registration data. Please complete the registration form first.</p>
+          <a href="form.html">Go to Registration Form →</a>
+        </div>
+      `;
+        }
+
+        // Make startOver available globally
+        window.startOver = startOver;
+    </script>
+</body>
+
+</html>

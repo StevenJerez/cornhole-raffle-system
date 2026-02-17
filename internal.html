@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoring Dashboard - IFA 2026 Internal</title>
+    <style>
+        /* filename: internal.html */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f3f4f6;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #0891b2;
+        }
+
+        .login-card p {
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        input[type="password"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        /* Top Nav */
+        header {
+            background: white;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 16px 0;
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-left h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0891b2;
+        }
+
+        .header-left .role-badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-left: 12px;
+            text-transform: uppercase;
+        }
+
+        .role-staff {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .role-marketing {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .role-admin {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: #f3f4f6;
+            color: #0891b2;
+        }
+
+        nav a.active {
+            background: #0891b2;
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #0891b2;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0e7490;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #4b5563;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #b91c1c;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-large {
+            padding: 14px 28px;
+            font-size: 16px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #111827;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        /* Search Panel */
+        .search-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0891b2;
+        }
+
+        .results-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .result-item:hover {
+            background: #f9fafb;
+            border-color: #0891b2;
+        }
+
+        .result-item.active {
+            background: #eff6ff;
+            border-color: #0891b2;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .result-name {
+            font-weight: 600;
+            color: #111827;
+            font-size: 16px;
+        }
+
+        .result-badge {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-done {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .result-details {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .result-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Registration Detail */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .scoring-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Recent Actions */
+        .recent-actions {
+            margin: 20px 0;
+            padding: 16px;
+            background: #fef3c7;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .recent-actions h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #fbbf24;
+        }
+
+        .action-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-info {
+            flex: 1;
+        }
+
+        .action-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+
+        .action-meta {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .btn-undo {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-undo:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        /* Ledger Table */
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .ledger-table th {
+            background: #f9fafb;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .ledger-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .ledger-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .delta-positive {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .delta-zero {
+            color: #6b7280;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 12px;
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success {
+            border-color: #10b981;
+        }
+
+        .toast-info {
+            border-color: #0891b2;
+        }
+
+        .toast-warning {
+            border-color: #f59e0b;
+        }
+
+        .toast-error {
+            border-color: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Utility */
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scoring-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1>🎯 Internal Access</h1>
+            <p>IFA 2026 Cornhole Raffle System</p>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="passwordInput" placeholder="Enter password">
+                <div class="error-msg" id="passwordError">Invalid password</div>
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select id="roleSelect">
+                    <option value="staff">Staff</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary btn-large" style="width: 100%;" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <!-- Main App (hidden until logged in) -->
+    <div id="mainApp" class="hidden">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1>Scoring Dashboard</h1>
+                        <span class="role-badge" id="roleBadge"></span>
+                    </div>
+                    <nav>
+                        <a href="internal.html" class="active">Scoring Dashboard</a>
+                        <a href="internal_draw.html" id="drawLink" class="hidden">Live Draw</a>
+                        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- Utility Buttons -->
+            <div class="card">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="seedData()">Create Demo Data</button>
+                    <button class="btn btn-danger" onclick="resetData()">Reset Demo Data</button>
+                </div>
+            </div>
+
+            <!-- Search Panel -->
+            <div class="card">
+                <h2>Search Registrations</h2>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by name or email..."
+                    oninput="searchRegistrations()">
+
+                <div class="results-list" id="resultsList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <p>Search for registrations by name or email</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Detail -->
+            <div id="detailCard" class="card hidden">
+                <h2>Registration Detail</h2>
+                <div id="detailContent"></div>
+            </div>
+
+            <!-- Ledger -->
+            <div class="card">
+                <h2>Recent Activity</h2>
+                <div style="overflow-x: auto;">
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Email</th>
+                                <th>Reg ID</th>
+                                <th>Action</th>
+                                <th>Tickets</th>
+                                <th>Actor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerBody">
+                            <tr>
+                                <td colspan="6" class="text-center" style="padding: 40px; color: #6b7280;">No activity
+                                    yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Global state
+        let currentRole = null;
+        let selectedRegistration = null;
+        const CORRECT_PASSWORD = 'discovered2026';
+
+        // ============ AUTH ============
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            const role = document.getElementById('roleSelect').value;
+            const errorMsg = document.getElementById('passwordError');
+
+            if (password !== CORRECT_PASSWORD) {
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            currentRole = role;
+            sessionStorage.setItem('ifa2026_auth_role', role);
+
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+
+            updateRoleUI();
+            initApp();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('ifa2026_auth_role');
+            currentRole = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function updateRoleUI() {
+            const badge = document.getElementById('roleBadge');
+            badge.textContent = currentRole;
+            badge.className = 'role-badge role-' + currentRole;
+
+            // Show/hide draw link for admin
+            const drawLink = document.getElementById('drawLink');
+            if (currentRole === 'admin') {
+                drawLink.classList.remove('hidden');
+            } else {
+                drawLink.classList.add('hidden');
+            }
+        }
+
+        // Check if already logged in
+        if (sessionStorage.getItem('ifa2026_auth_role')) {
+            currentRole = sessionStorage.getItem('ifa2026_auth_role');
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            updateRoleUI();
+            initApp();
+        }
+
+        // ============ STORAGE ============
+        function getContacts() {
+            const data = localStorage.getItem('ifa2026_contacts');
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveContacts(contacts) {
+            localStorage.setItem('ifa2026_contacts', JSON.stringify(contacts));
+        }
+
+        function getRegistrations() {
+            const data = localStorage.getItem('ifa2026_registrations');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveRegistrations(registrations) {
+            localStorage.setItem('ifa2026_registrations', JSON.stringify(registrations));
+        }
+
+        function getLedger() {
+            const data = localStorage.getItem('ifa2026_ticket_ledger');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveLedger(ledger) {
+            localStorage.setItem('ifa2026_ticket_ledger', JSON.stringify(ledger));
+        }
+
+        function addLedgerEntry(entry) {
+            const ledger = getLedger();
+            ledger.push({
+                id: 'ledger_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                timestamp: new Date().toISOString(),
+                ...entry
+            });
+            saveLedger(ledger);
+        }
+
+        // ============ DATA HELPERS ============
+        function getTotalTicketsByEmail(email) {
+            const ledger = getLedger();
+            return ledger
+                .filter(entry => entry.email === email)
+                .reduce((sum, entry) => sum + entry.delta, 0);
+        }
+
+        function getRecentActionsForRegistration(regId, email) {
+            const ledger = getLedger();
+            // Get recent actions for this registration or email (for bonus)
+            const actions = ledger.filter(entry =>
+                (entry.registration_id === regId || (entry.reason === 'bonus' && entry.email === email)) &&
+                entry.reason !== 'register' // Don't show registration action as it can't be undone
+            );
+            // Return last 5 actions, newest first
+            return actions.slice(-5).reverse();
+        }
+
+        function ensureContact(email, name, company) {
+            const contacts = getContacts();
+            if (!contacts[email]) {
+                contacts[email] = {
+                    email,
+                    name,
+                    company,
+                    email_bonus_applied: false,
+                    created_at: new Date().toISOString()
+                };
+                saveContacts(contacts);
+            }
+            return contacts[email];
+        }
+
+        // ============ SEED DATA ============
+        function seedData() {
+            if (!confirm('This will create demo data. Continue?')) return;
+
+            const contacts = {};
+            const registrations = [];
+            const ledger = [];
+
+            const sampleData = [
+                { firstName: 'John', lastName: 'Smith', company: 'TechCorp', email: 'john.smith@techcorp.com' },
+                { firstName: 'Sarah', lastName: 'Johnson', company: 'InnovateLab', email: 'sarah.j@innovatelab.com' },
+                { firstName: 'Michael', lastName: 'Chen', company: 'DataFlow Inc', email: 'mchen@dataflow.com' },
+                { firstName: 'Emily', lastName: 'Davis', company: 'CloudFirst', email: 'emily.davis@cloudfirst.io' },
+                { firstName: 'David', lastName: 'Wilson', company: 'AgileWorks', email: 'dwilson@agileworks.com' }
+            ];
+
+            // Create contacts
+            sampleData.forEach((person, i) => {
+                contacts[person.email] = {
+                    email: person.email,
+                    name: `${person.firstName} ${person.lastName}`,
+                    company: person.company,
+                    email_bonus_applied: i < 2, // First 2 have bonus
+                    created_at: new Date(Date.now() - (5 - i) * 86400000).toISOString()
+                };
+            });
+
+            // Create registrations
+            sampleData.forEach((person, i) => {
+                const regCount = i === 0 ? 2 : 1; // John has 2 registrations
+
+                for (let j = 0; j < regCount; j++) {
+                    const rid = 'rid_' + Date.now() + '_' + i + '_' + j;
+                    const attemptsUsed = Math.floor(Math.random() * 4); // 0-3
+                    const attemptsRemaining = 3 - attemptsUsed;
+
+                    let ticketsThisReg = 1; // Base registration ticket
+
+                    const reg = {
+                        registration_id: rid,
+                        email: person.email,
+                        firstName: person.firstName,
+                        lastName: person.lastName,
+                        company: person.company,
+                        jobTitle: 'Manager',
+                        phone: '555-0100',
+                        companySize: '51-200',
+                        attempts_remaining: attemptsRemaining,
+                        tickets_this_registration: 0, // Will be calculated
+                        summary_email_sent: attemptsRemaining === 0,
+                        created_at: new Date(Date.now() - (5 - i) * 86400000 - j * 3600000).toISOString()
+                    };
+
+                    // Add base registration ticket
+                    ledger.push({
+                        id: 'ledger_reg_' + rid,
+                        email: person.email,
+                        registration_id: rid,
+                        delta: 1,
+                        reason: 'register',
+                        actor: 'system',
+                        timestamp: reg.created_at
+                    });
+
+                    // Add some scoring
+                    for (let k = 0; k < attemptsUsed; k++) {
+                        const outcomes = [
+                            { reason: 'bag_in', delta: 10 },
+                            { reason: 'board_hit', delta: 5 },
+                            { reason: 'miss', delta: 0 }
+                        ];
+                        const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+
+                        ticketsThisReg += outcome.delta;
+
+                        ledger.push({
+                            id: 'ledger_score_' + rid + '_' + k,
+                            email: person.email,
+                            registration_id: rid,
+                            delta: outcome.delta,
+                            reason: outcome.reason,
+                            actor: ['staff', 'marketing'][Math.floor(Math.random() * 2)],
+                            timestamp: new Date(Date.parse(reg.created_at) + (k + 1) * 60000).toISOString()
+                        });
+                    }
+
+                    reg.tickets_this_registration = ticketsThisReg;
+                    registrations.push(reg);
+                }
+            });
+
+            // Add bonus for first 2 contacts
+            sampleData.slice(0, 2).forEach((person, i) => {
+                ledger.push({
+                    id: 'ledger_bonus_' + i,
+                    email: person.email,
+                    registration_id: registrations.find(r => r.email === person.email).registration_id,
+                    delta: 15,
+                    reason: 'bonus',
+                    actor: 'marketing',
+                    timestamp: new Date(Date.now() - (4 - i) * 86400000).toISOString()
+                });
+            });
+
+            saveContacts(contacts);
+            saveRegistrations(registrations);
+            saveLedger(ledger);
+
+            showToast('Demo data created successfully!', 'success');
+            searchRegistrations();
+            renderLedger();
+        }
+
+        function resetData() {
+            if (!confirm('This will DELETE all demo data. Are you sure?')) return;
+
+            localStorage.removeItem('ifa2026_contacts');
+            localStorage.removeItem('ifa2026_registrations');
+            localStorage.removeItem('ifa2026_ticket_ledger');
+            localStorage.removeItem('ifa2026_draws');
+            localStorage.removeItem('ifa2026_winners');
+
+            showToast('All data has been reset', 'info');
+
+            document.getElementById('resultsList').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <p>Search for registrations by name or email</p>
+        </div>
+      `;
+            document.getElementById('detailCard').classList.add('hidden');
+            renderLedger();
+        }
+
+        // ============ SEARCH ============
+        function searchRegistrations() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const registrations = getRegistrations();
+
+            let filtered = registrations;
+            if (query) {
+                filtered = registrations.filter(reg =>
+                    reg.firstName.toLowerCase().includes(query) ||
+                    reg.lastName.toLowerCase().includes(query) ||
+                    reg.email.toLowerCase().includes(query) ||
+                    reg.company.toLowerCase().includes(query)
+                );
+            }
+
+            // Sort by created_at desc
+            filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            renderResults(filtered);
+        }
+
+        function renderResults(registrations) {
+            const container = document.getElementById('resultsList');
+
+            if (registrations.length === 0) {
+                container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <p>No registrations found</p>
+          </div>
+        `;
+                return;
+            }
+
+            container.innerHTML = registrations.map(reg => {
+                const totalTickets = getTotalTicketsByEmail(reg.email);
+                const isActive = reg.attempts_remaining > 0;
+                const badgeClass = isActive ? 'badge-active' : 'badge-done';
+                const badgeText = isActive ? `${reg.attempts_remaining} left` : 'Complete';
+
+                return `
+          <div class="result-item" onclick="selectRegistration('${reg.registration_id}')">
+            <div class="result-header">
+              <div class="result-name">${reg.firstName} ${reg.lastName}</div>
+              <span class="result-badge ${badgeClass}">${badgeText}</span>
+            </div>
+            <div class="result-details">
+              <div>${reg.email}</div>
+              <div>${reg.company}</div>
+              <div>Registered: ${new Date(reg.created_at).toLocaleString()}</div>
+            </div>
+            <div class="result-stats">
+              <div class="stat-item">
+                <span>🎟️ This Reg:</span>
+                <span>${reg.tickets_this_registration}</span>
+              </div>
+              <div class="stat-item">
+                <span>🎫 Total:</span>
+                <span>${totalTickets}</span>
+              </div>
+            </div>
+          </div>
+        `;
+            }).join('');
+        }
+
+        // ============ REGISTRATION DETAIL ============
+        function selectRegistration(regId) {
+            const registrations = getRegistrations();
+            selectedRegistration = registrations.find(r => r.registration_id === regId);
+
+            if (!selectedRegistration) return;
+
+            document.getElementById('detailCard').classList.remove('hidden');
+            renderDetail();
+
+            // Scroll to detail
+            document.getElementById('detailCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function renderDetail() {
+            if (!selectedRegistration) return;
+
+            const contacts = getContacts();
+            const contact = contacts[selectedRegistration.email];
+            const totalTickets = getTotalTicketsByEmail(selectedRegistration.email);
+            const canScore = selectedRegistration.attempts_remaining > 0;
+            const canBonus = currentRole !== 'staff' && contact && !contact.email_bonus_applied;
+
+            const content = `
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Name</label>
+            <div class="value">${selectedRegistration.firstName} ${selectedRegistration.lastName}</div>
+          </div>
+          <div class="detail-item">
+            <label>Email</label>
+            <div class="value">${selectedRegistration.email}</div>
+          </div>
+          <div class="detail-item">
+            <label>Company</label>
+            <div class="value">${selectedRegistration.company}</div>
+          </div>
+          <div class="detail-item">
+            <label>Registration ID</label>
+            <div class="value" style="font-size: 12px; font-family: monospace;">${selectedRegistration.registration_id}</div>
+          </div>
+          <div class="detail-item">
+            <label>Created</label>
+            <div class="value">${new Date(selectedRegistration.created_at).toLocaleString()}</div>
+          </div>
+          <div class="detail-item">
+            <label>Attempts Remaining</label>
+            <div class="value">${selectedRegistration.attempts_remaining} / 3</div>
+          </div>
+          <div class="detail-item">
+            <label>Tickets This Reg</label>
+            <div class="value">${selectedRegistration.tickets_this_registration}</div>
+          </div>
+          <div class="detail-item">
+            <label>Total Tickets (Email)</label>
+            <div class="value" style="color: #0891b2;">${totalTickets}</div>
+          </div>
+        </div>
+
+        <div class="status-badges">
+          <span class="status-badge ${contact?.email_bonus_applied ? 'status-success' : 'status-info'}">
+            Bonus: ${contact?.email_bonus_applied ? 'Applied' : 'Not Applied'}
+          </span>
+          <span class="status-badge ${selectedRegistration.summary_email_sent ? 'status-success' : 'status-warning'}">
+            Email: ${selectedRegistration.summary_email_sent ? 'Sent' : 'Pending'}
+          </span>
+        </div>
+
+        <h3>Score Attempts</h3>
+        <div class="scoring-buttons">
+          <button class="btn btn-success" onclick="scoreAttempt('bag_in', 10)" ${!canScore ? 'disabled' : ''}>
+            🎯 BAG IN (+10)
+          </button>
+          <button class="btn btn-warning" onclick="scoreAttempt('board_hit', 5)" ${!canScore ? 'disabled' : ''}>
+            🎲 BOARD HIT (+5)
+          </button>
+          <button class="btn btn-secondary" onclick="scoreAttempt('miss', 0)" ${!canScore ? 'disabled' : ''}>
+            ❌ MISS (+0)
+          </button>
+        </div>
+        ${!canScore ? '<p style="color: #6b7280; font-size: 14px; margin-top: -8px;">No attempts remaining for this registration.</p>' : ''}
+
+        ${currentRole !== 'staff' ? `
+          <h3 style="margin-top: 20px;">Bonus</h3>
+          <button class="btn btn-primary" onclick="applyBonus()" ${!canBonus ? 'disabled' : ''}>
+            🎁 ADD +15 ONBOARDING BONUS
+          </button>
+          ${!canBonus && contact?.email_bonus_applied ? '<p style="color: #6b7280; font-size: 14px; margin-top: 8px;">Bonus already used for this email.</p>' : ''}
+        ` : ''}
+      `;
+
+            document.getElementById('detailContent').innerHTML = content;
+
+            // Render recent actions below
+            renderRecentActions();
+        }
+
+        function renderRecentActions() {
+            if (!selectedRegistration) return;
+
+            const actions = getRecentActionsForRegistration(selectedRegistration.registration_id, selectedRegistration.email);
+
+            if (actions.length === 0) return;
+
+            const reasonLabels = {
+                bag_in: '🎯 Bag In',
+                board_hit: '🎲 Board Hit',
+                miss: '❌ Miss',
+                bonus: '🎁 Onboarding Bonus'
+            };
+
+            const actionsHTML = `
+        <div class="recent-actions">
+          <h4>⏮️ Recent Actions (Can Undo)</h4>
+          ${actions.map(action => `
+            <div class="action-item">
+              <div class="action-info">
+                <div class="action-label">
+                  ${reasonLabels[action.reason] || action.reason} (+${action.delta} tickets)
+                </div>
+                <div class="action-meta">
+                  ${new Date(action.timestamp).toLocaleString()} • by ${action.actor}
+                </div>
+              </div>
+              <button class="btn-undo" onclick="undoAction('${action.id}')" title="Undo this action">
+                ↶ Undo
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+            document.getElementById('detailContent').insertAdjacentHTML('beforeend', actionsHTML);
+        }
+
+        // ============ SCORING ============
+        function scoreAttempt(reason, delta) {
+            if (!selectedRegistration || selectedRegistration.attempts_remaining <= 0) return;
+
+            const registrations = getRegistrations();
+            const reg = registrations.find(r => r.registration_id === selectedRegistration.registration_id);
+
+            // Decrement attempts
+            reg.attempts_remaining -= 1;
+            reg.tickets_this_registration += delta;
+
+            // Check if this was the last attempt
+            const wasLastAttempt = reg.attempts_remaining === 0;
+
+            // Add ledger entry
+            addLedgerEntry({
+                email: reg.email,
+                registration_id: reg.registration_id,
+                delta: delta,
+                reason: reason,
+                actor: currentRole
+            });
+
+            // If last attempt, mark email sent
+            if (wasLastAttempt) {
+                reg.summary_email_sent = true;
+                showToast(`Summary email simulated as sent for ${reg.email} (registration ${reg.registration_id})`, 'info');
+            }
+
+            saveRegistrations(registrations);
+            selectedRegistration = reg;
+
+            const reasonText = reason === 'bag_in' ? 'BAG IN' : reason === 'board_hit' ? 'BOARD HIT' : 'MISS';
+            showToast(`Scored: ${reasonText} (+${delta} tickets)`, 'success');
+
+            renderDetail();
+            searchRegistrations();
+            renderLedger();
+        }
+
+        function applyBonus() {
+            if (!selectedRegistration) return;
+
+            const contacts = getContacts();
+            const contact = contacts[selectedRegistration.email];
+
+            if (!contact || contact.email_bonus_applied) {
+                showToast('Bonus already applied for this email', 'warning');
+                return;
+            }
+
+            // Mark bonus as applied
+            contact.email_bonus_applied = true;
+            saveContacts(contacts);
+
+            // Add ledger entry
+            addLedgerEntry({
+                email: selectedRegistration.email,
+                registration_id: selectedRegistration.registration_id,
+                delta: 15,
+                reason: 'bonus',
+                actor: currentRole
+            });
+
+            showToast('Onboarding bonus (+15 tickets) applied!', 'success');
+
+            renderDetail();
+            searchRegistrations();
+            renderLedger();
+        }
+
+        // ============ UNDO ACTIONS ============
+        function undoAction(ledgerId) {
+            if (!confirm('Are you sure you want to undo this action? This cannot be reversed.')) return;
+
+            const ledger = getLedger();
+            const entryIndex = ledger.findIndex(e => e.id === ledgerId);
+
+            if (entryIndex === -1) {
+                showToast('Action not found', 'error');
+                return;
+            }
+
+            const entry = ledger[entryIndex];
+            const registrations = getRegistrations();
+            const reg = registrations.find(r => r.registration_id === entry.registration_id);
+
+            if (!reg) {
+                showToast('Registration not found', 'error');
+                return;
+            }
+
+            // Handle different action types
+            if (entry.reason === 'bonus') {
+                // Undo bonus: set email_bonus_applied back to false
+                const contacts = getContacts();
+                const contact = contacts[entry.email];
+                if (contact) {
+                    contact.email_bonus_applied = false;
+                    saveContacts(contacts);
+                }
+                showToast('Bonus undone: +15 tickets removed', 'info');
+            } else if (['bag_in', 'board_hit', 'miss'].includes(entry.reason)) {
+                // Undo scoring: restore attempts
+                const wasComplete = reg.attempts_remaining === 0;
+                reg.attempts_remaining += 1;
+                reg.tickets_this_registration -= entry.delta;
+
+                // If this was the action that completed attempts, reset email sent status
+                if (wasComplete) {
+                    reg.summary_email_sent = false;
+                    showToast('Summary email status reset (attempt restored)', 'info');
+                }
+
+                const reasonText = entry.reason === 'bag_in' ? 'Bag In' : entry.reason === 'board_hit' ? 'Board Hit' : 'Miss';
+                showToast(`${reasonText} undone: attempt restored, ${entry.delta} tickets removed`, 'info');
+            }
+
+            // Remove the ledger entry
+            ledger.splice(entryIndex, 1);
+            saveLedger(ledger);
+            saveRegistrations(registrations);
+
+            // Update selected registration reference
+            selectedRegistration = reg;
+
+            // Re-render everything
+            renderDetail();
+            searchRegistrations();
+            renderLedger();
+        }
+
+        // ============ LEDGER ============
+        function renderLedger() {
+            const ledger = getLedger();
+            const recent = ledger.slice(-25).reverse(); // Last 25, newest first
+
+            const tbody = document.getElementById('ledgerBody');
+
+            if (recent.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding: 40px; color: #6b7280;">No activity yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = recent.map(entry => {
+                const reasonLabels = {
+                    register: 'Registration',
+                    bag_in: 'Bag In',
+                    board_hit: 'Board Hit',
+                    miss: 'Miss',
+                    bonus: 'Onboarding Bonus'
+                };
+
+                const deltaClass = entry.delta > 0 ? 'delta-positive' : 'delta-zero';
+
+                return `
+          <tr>
+            <td>${new Date(entry.timestamp).toLocaleString()}</td>
+            <td>${entry.email}</td>
+            <td style="font-family: monospace; font-size: 11px;">${entry.registration_id.substring(0, 12)}...</td>
+            <td>${reasonLabels[entry.reason] || entry.reason}</td>
+            <td class="${deltaClass}">+${entry.delta}</td>
+            <td>${entry.actor}</td>
+          </tr>
+        `;
+            }).join('');
+        }
+
+        // ============ TOAST ============
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        // ============ INIT ============
+        function initApp() {
+            renderLedger();
+
+            // Check for public registration data and migrate if exists
+            const publicReg = localStorage.getItem('ifa2026_registration');
+            if (publicReg) {
+                try {
+                    const data = JSON.parse(publicReg);
+                    const rid = localStorage.getItem('ifa2026_rid') || 'rid_' + Date.now();
+
+                    // Create contact
+                    ensureContact(data.email, `${data.firstName} ${data.lastName}`, data.company);
+
+                    // Create registration
+                    const registrations = getRegistrations();
+                    if (!registrations.find(r => r.registration_id === rid)) {
+                        registrations.push({
+                            registration_id: rid,
+                            email: data.email,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            company: data.company,
+                            jobTitle: data.jobTitle,
+                            phone: data.phone,
+                            companySize: data.companySize,
+                            attempts_remaining: 3,
+                            tickets_this_registration: 1,
+                            summary_email_sent: false,
+                            created_at: data.timestamp || new Date().toISOString()
+                        });
+                        saveRegistrations(registrations);
+
+                        // Add base registration ticket to ledger
+                        addLedgerEntry({
+                            email: data.email,
+                            registration_id: rid,
+                            delta: 1,
+                            reason: 'register',
+                            actor: 'system'
+                        });
+
+                        showToast('Public registration imported successfully', 'success');
+                        renderLedger();
+                    }
+                } catch (e) {
+                    console.error('Error importing public registration:', e);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

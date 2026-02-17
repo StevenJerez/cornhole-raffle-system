@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Discovered: Bag the Meta</title>
+    <style>
+        /* filename: form.html */
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #5E35B1 0%, #1A237E 60%, #0D1442 100%);
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 40px;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
+        }
+
+        header .event-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #00E5FF;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            transform: translateX(-4px);
+        }
+
+        /* Form Card */
+        .form-card {
+            background: linear-gradient(180deg, #1E88E5 0%, #1565C0 100%);
+            border-radius: 32px;
+            padding: 36px 28px;
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.45),
+                inset 0 3px 6px rgba(255, 255, 255, 0.2);
+            outline: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .form-card h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-card .subtitle {
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 28px;
+            font-size: 15px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #FF6A00;
+            margin-left: 2px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 16px 18px;
+            font-size: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
+            padding-right: 48px;
+        }
+
+        select option {
+            background: #1565C0;
+            color: #ffffff;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #00E5FF;
+            box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        input.error,
+        select.error {
+            border-color: #FF6A00;
+            box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.2);
+        }
+
+        .error-message {
+            color: #FFB347;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 600;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: #FF9800;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Submit Button */
+        .btn {
+            width: 100%;
+            padding: 18px 36px;
+            font-size: 18px;
+            font-weight: 800;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(180deg, #FFD54F 0%, #FF9800 100%);
+            color: #ffffff;
+            box-shadow:
+                0 8px 0 rgba(0, 0, 0, 0.25),
+                0 12px 30px rgba(0, 0, 0, 0.35),
+                inset 0 4px 6px rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 0 rgba(0, 0, 0, 0.25),
+                0 16px 35px rgba(0, 0, 0, 0.45),
+                inset 0 4px 6px rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-submit:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow:
+                0 4px 0 rgba(0, 0, 0, 0.25),
+                0 6px 15px rgba(0, 0, 0, 0.35),
+                inset 0 4px 6px rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(0, 229, 255, 0.15);
+            border-left: 4px solid #00E5FF;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 28px;
+        }
+
+        .info-box p {
+            color: #ffffff;
+            font-size: 15px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+
+        /* Vignette Effect */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+        }
+
+        @media (max-width: 480px) {
+            .form-card {
+                padding: 28px 20px;
+                border-radius: 24px;
+            }
+
+            .form-card h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Effects -->
+    <div class="vignette"></div>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="container">
+            <h1>Discovered: Bag the Meta</h1>
+            <div class="event-info">IFA 2026 • Feb 23–25 • Mandalay Bay, Las Vegas</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="form-card">
+            <h2>Register to Play</h2>
+            <p class="subtitle">Complete your registration to unlock Unlimited DISC assessments and get your 3 cornhole
+                attempts.</p>
+
+            <div class="info-box">
+                <p>✅ Registration includes 3 attempts + Unlimited DISC for your team</p>
+            </div>
+
+            <form id="registrationForm" novalidate>
+                <div class="form-group">
+                    <label for="firstName">First Name <span class="required">*</span></label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required
+                        aria-required="true">
+                    <div class="error-message" id="firstNameError">Please enter your first name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name <span class="required">*</span></label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required
+                        aria-required="true">
+                    <div class="error-message" id="lastNameError">Please enter your last name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="company">Company <span class="required">*</span></label>
+                    <input type="text" id="company" name="company" placeholder="Enter your company name" required
+                        aria-required="true">
+                    <div class="error-message" id="companyError">Please enter your company name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobTitle">Job Title <span class="required">*</span></label>
+                    <input type="text" id="jobTitle" name="jobTitle" placeholder="Enter your job title" required
+                        aria-required="true">
+                    <div class="error-message" id="jobTitleError">Please enter your job title</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Work Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="you@company.com" required
+                        aria-required="true">
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required
+                        aria-required="true">
+                    <div class="error-message" id="phoneError">Please enter your phone number</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="companySize">Company Size <span class="required">*</span></label>
+                    <select id="companySize" name="companySize" required aria-required="true">
+                        <option value="">Select company size</option>
+                        <option value="1-10">1-10</option>
+                        <option value="11-50">11-50</option>
+                        <option value="51-200">51-200</option>
+                        <option value="201-1000">201-1000</option>
+                        <option value="1000+">1000+</option>
+                    </select>
+                    <div class="error-message" id="companySizeError">Please select your company size</div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="marketingConsent" name="marketingConsent" required aria-required="true">
+                    <label for="marketingConsent" class="checkbox-label">
+                        I agree to receive marketing communications about DISC assessments and related services. <span
+                            class="required">*</span>
+                    </label>
+                </div>
+                <div class="error-message" id="marketingConsentError" style="margin-top: -12px; margin-bottom: 20px;">
+                    You must agree to continue</div>
+
+                <button type="submit" class="btn btn-submit" id="submitBtn">Submit & Get My 3 Attempts</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Discovered: Bag the Meta. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 20;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particle.style.width = (2 + Math.random() * 4) + 'px';
+            particle.style.height = particle.style.width;
+            particlesContainer.appendChild(particle);
+        }
+
+        // Form validation and submission
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Field configurations
+        const fields = [
+            { id: 'firstName', validator: (val) => val.trim().length > 0 },
+            { id: 'lastName', validator: (val) => val.trim().length > 0 },
+            { id: 'company', validator: (val) => val.trim().length > 0 },
+            { id: 'jobTitle', validator: (val) => val.trim().length > 0 },
+            { id: 'email', validator: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) },
+            { id: 'phone', validator: (val) => val.trim().length > 0 },
+            { id: 'companySize', validator: (val) => val.trim().length > 0 },
+            { id: 'marketingConsent', validator: (val) => document.getElementById('marketingConsent').checked }
+        ];
+
+        // Validate single field
+        function validateField(fieldId) {
+            const field = fields.find(f => f.id === fieldId);
+            if (!field) return true;
+
+            const element = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            let value;
+
+            if (fieldId === 'marketingConsent') {
+                value = element.checked;
+            } else {
+                value = element.value;
+            }
+
+            const isValid = field.validator(value);
+
+            if (!isValid) {
+                element.classList.add('error');
+                errorElement.classList.add('show');
+            } else {
+                element.classList.remove('error');
+                errorElement.classList.remove('show');
+            }
+
+            return isValid;
+        }
+
+        // Add blur event listeners for real-time validation
+        fields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (field.id === 'marketingConsent') {
+                element.addEventListener('change', () => validateField(field.id));
+            } else {
+                element.addEventListener('blur', () => validateField(field.id));
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validate all fields
+            let isValid = true;
+            fields.forEach(field => {
+                if (!validateField(field.id)) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                // Scroll to first error
+                const firstError = document.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            // Collect form data
+            const formData = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                company: document.getElementById('company').value.trim(),
+                jobTitle: document.getElementById('jobTitle').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                companySize: document.getElementById('companySize').value,
+                marketingConsent: document.getElementById('marketingConsent').checked,
+                timestamp: new Date().toISOString()
+            };
+
+            // Generate registration ID
+            const rid = 'rid_' + Date.now();
+
+            // Save to localStorage
+            try {
+                localStorage.setItem('ifa2026_registration', JSON.stringify(formData));
+                localStorage.setItem('ifa2026_rid', rid);
+
+                // Simulate network delay for better UX
+                setTimeout(() => {
+                    // Redirect to thanks page
+                    window.location.href = 'thanks.html?rid=' + rid;
+                }, 500);
+            } catch (error) {
+                alert('Error saving registration. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit & Get My 3 Attempts';
+            }
+        });
+    </script>
+</body>
+
+</html>
