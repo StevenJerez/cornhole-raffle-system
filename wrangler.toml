@@ -1,0 +1,11 @@
+name = "raffle-2026-redirection"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+routes = [
+  { pattern = "discovered.ai/ifa2026", zone_name = "discovered.ai" },
+  { pattern = "discovered.ai/ifa2026/*", zone_name = "discovered.ai" }
+]
+
+[vars]
+GCS_BUCKET = "raffle-2026-bucket"
