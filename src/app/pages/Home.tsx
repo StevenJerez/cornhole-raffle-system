@@ -30,7 +30,7 @@ export default function Home() {
           <button 
             className="bg-gradient-to-r from-[#F39C44] to-[#F5B668] text-white font-bold py-4 px-12 rounded-full shadow-lg hover:shadow-xl transition-all" 
             style={{ fontSize: '17px' }} 
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/ifa2026/register')}
           >
             Play to Win
           </button>
@@ -184,7 +184,7 @@ export default function Home() {
         <div className="text-center pt-4 pb-8">
           <button 
             className="bg-gradient-to-r from-[#4A9D9C] to-[#7BC8CA] text-white font-bold py-4 px-12 rounded-full shadow-lg hover:shadow-xl transition-all text-lg w-full" 
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/ifa2026/register')}
           >
             Get Started Now
           </button>

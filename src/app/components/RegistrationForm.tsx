@@ -19,7 +19,7 @@ export function RegistrationForm() {
     
     // Bot check - honeypot field should be empty
     if (honeypot) {
-      navigate('/confirmation');
+      navigate('/ifa2026/confirmation');
       return;
     }
     
@@ -52,7 +52,7 @@ export function RegistrationForm() {
       });
       
       if (response.ok) {
-        navigate('/confirmation');
+        navigate('/ifa2026/confirmation');
       } else {
         const data = await response.json();
         setError(data.error || "Registration failed. Please try again.");
@@ -263,7 +263,7 @@ export function RegistrationForm() {
         {/* Back Link */}
         <div className="text-center pb-8">
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/ifa2026/')}
             className="text-[#4A9D9C] font-medium hover:underline"
             style={{ fontSize: '15px' }}
           >

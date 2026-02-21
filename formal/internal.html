@@ -615,15 +615,6 @@
                 <div class="error-msg" id="passwordError">Invalid password</div>
             </div>
 
-            <div class="form-group">
-                <label>Role</label>
-                <select id="roleSelect">
-                    <option value="staff">Staff</option>
-                    <option value="marketing">Marketing</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-
             <button class="btn btn-primary btn-large" style="width: 100%;" onclick="login()">Login</button>
         </div>
     </div>
@@ -635,11 +626,11 @@
                 <div class="header-content">
                     <div class="header-left">
                         <h1>Scoring Dashboard</h1>
-                        <span class="role-badge" id="roleBadge"></span>
+                        <span class="role-badge role-admin" id="roleBadge">ADMIN</span>
                     </div>
                     <nav>
                         <a href="internal.html" class="active">Scoring Dashboard</a>
-                        <a href="internal_draw.html" id="drawLink" class="hidden">Live Draw</a>
+                        <a href="internal_draw.html" id="drawLink">Live Draw</a>
                         <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
                     </nav>
                 </div>
@@ -647,14 +638,6 @@
         </header>
 
         <main class="container">
-            <!-- Utility Buttons -->
-            <div class="card">
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <button class="btn btn-secondary" onclick="seedData()">Create Demo Data</button>
-                    <button class="btn btn-danger" onclick="resetData()">Reset Demo Data</button>
-                </div>
-            </div>
-
             <!-- Search Panel -->
             <div class="card">
                 <h2>Search Registrations</h2>
@@ -707,34 +690,68 @@
 
     <script>
         // Global state
-        let currentRole = null;
+        let currentRole = 'admin';
         let selectedRegistration = null;
-        const CORRECT_PASSWORD = 'discovered2026';
+        let state = {
+            contacts: {},
+            registrations: [],
+            ledger: [],
+            draws: [],
+            winners: []
+        };
+        let persistTimer = null;
+        const API_BASE = location.pathname.startsWith('/ifa2026') ? '/ifa2026/api/internal' : '/api/internal';
+
+        function getAuthToken() {
+            return sessionStorage.getItem('ifa2026_admin_token');
+        }
+
+        async function apiFetch(path, options = {}) {
+            const headers = options.headers ? { ...options.headers } : {};
+            const token = getAuthToken();
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            return fetch(`${API_BASE}${path}`, { ...options, headers });
+        }
 
         // ============ AUTH ============
-        function login() {
+        async function login() {
             const password = document.getElementById('passwordInput').value;
-            const role = document.getElementById('roleSelect').value;
             const errorMsg = document.getElementById('passwordError');
 
-            if (password !== CORRECT_PASSWORD) {
+            errorMsg.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                if (!response.ok) {
+                    errorMsg.textContent = 'Invalid password';
+                    errorMsg.classList.add('show');
+                    return;
+                }
+
+                const data = await response.json();
+                sessionStorage.setItem('ifa2026_admin_token', data.token);
+
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+
+                updateRoleUI();
+                await initApp();
+            } catch (error) {
+                errorMsg.textContent = 'Login failed';
                 errorMsg.classList.add('show');
-                return;
             }
-
-            currentRole = role;
-            sessionStorage.setItem('ifa2026_auth_role', role);
-
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-
-            updateRoleUI();
-            initApp();
         }
 
         function logout() {
-            sessionStorage.removeItem('ifa2026_auth_role');
-            currentRole = null;
+            sessionStorage.removeItem('ifa2026_admin_token');
+            currentRole = 'admin';
             document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('passwordInput').value = '';
@@ -742,53 +759,94 @@
 
         function updateRoleUI() {
             const badge = document.getElementById('roleBadge');
-            badge.textContent = currentRole;
-            badge.className = 'role-badge role-' + currentRole;
-
-            // Show/hide draw link for admin
-            const drawLink = document.getElementById('drawLink');
-            if (currentRole === 'admin') {
-                drawLink.classList.remove('hidden');
-            } else {
-                drawLink.classList.add('hidden');
-            }
+            badge.textContent = 'ADMIN';
+            badge.className = 'role-badge role-admin';
         }
 
         // Check if already logged in
-        if (sessionStorage.getItem('ifa2026_auth_role')) {
-            currentRole = sessionStorage.getItem('ifa2026_auth_role');
+        if (getAuthToken()) {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             updateRoleUI();
-            initApp();
+            initApp().catch(() => {
+                logout();
+            });
         }
 
         // ============ STORAGE ============
+        function ensureStateDefaults() {
+            if (!state || typeof state !== 'object') {
+                state = { contacts: {}, registrations: [], ledger: [], draws: [], winners: [] };
+            }
+            state.contacts = state.contacts || {};
+            state.registrations = state.registrations || [];
+            state.ledger = state.ledger || [];
+            state.draws = state.draws || [];
+            state.winners = state.winners || [];
+        }
+
+        async function loadState() {
+            const response = await apiFetch('/state');
+            if (!response.ok) {
+                throw new Error('Failed to load state');
+            }
+            state = await response.json();
+            ensureStateDefaults();
+        }
+
+        function queuePersistState() {
+            if (persistTimer) {
+                clearTimeout(persistTimer);
+            }
+            persistTimer = setTimeout(() => {
+                persistState();
+            }, 300);
+        }
+
+        async function persistState() {
+            try {
+                const response = await apiFetch('/state', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(state)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to save');
+                }
+            } catch (error) {
+                showToast('Failed to save to Google Sheets', 'error');
+            }
+        }
+
         function getContacts() {
-            const data = localStorage.getItem('ifa2026_contacts');
-            return data ? JSON.parse(data) : {};
+            ensureStateDefaults();
+            return state.contacts;
         }
 
         function saveContacts(contacts) {
-            localStorage.setItem('ifa2026_contacts', JSON.stringify(contacts));
+            state.contacts = contacts;
+            queuePersistState();
         }
 
         function getRegistrations() {
-            const data = localStorage.getItem('ifa2026_registrations');
-            return data ? JSON.parse(data) : [];
+            ensureStateDefaults();
+            return state.registrations;
         }
 
         function saveRegistrations(registrations) {
-            localStorage.setItem('ifa2026_registrations', JSON.stringify(registrations));
+            state.registrations = registrations;
+            queuePersistState();
         }
 
         function getLedger() {
-            const data = localStorage.getItem('ifa2026_ticket_ledger');
-            return data ? JSON.parse(data) : [];
+            ensureStateDefaults();
+            return state.ledger;
         }
 
         function saveLedger(ledger) {
-            localStorage.setItem('ifa2026_ticket_ledger', JSON.stringify(ledger));
+            state.ledger = ledger;
+            queuePersistState();
         }
 
         function addLedgerEntry(entry) {
@@ -833,140 +891,6 @@
                 saveContacts(contacts);
             }
             return contacts[email];
-        }
-
-        // ============ SEED DATA ============
-        function seedData() {
-            if (!confirm('This will create demo data. Continue?')) return;
-
-            const contacts = {};
-            const registrations = [];
-            const ledger = [];
-
-            const sampleData = [
-                { firstName: 'John', lastName: 'Smith', company: 'TechCorp', email: 'john.smith@techcorp.com' },
-                { firstName: 'Sarah', lastName: 'Johnson', company: 'InnovateLab', email: 'sarah.j@innovatelab.com' },
-                { firstName: 'Michael', lastName: 'Chen', company: 'DataFlow Inc', email: 'mchen@dataflow.com' },
-                { firstName: 'Emily', lastName: 'Davis', company: 'CloudFirst', email: 'emily.davis@cloudfirst.io' },
-                { firstName: 'David', lastName: 'Wilson', company: 'AgileWorks', email: 'dwilson@agileworks.com' }
-            ];
-
-            // Create contacts
-            sampleData.forEach((person, i) => {
-                contacts[person.email] = {
-                    email: person.email,
-                    name: `${person.firstName} ${person.lastName}`,
-                    company: person.company,
-                    email_bonus_applied: i < 2, // First 2 have bonus
-                    created_at: new Date(Date.now() - (5 - i) * 86400000).toISOString()
-                };
-            });
-
-            // Create registrations
-            sampleData.forEach((person, i) => {
-                const regCount = i === 0 ? 2 : 1; // John has 2 registrations
-
-                for (let j = 0; j < regCount; j++) {
-                    const rid = 'rid_' + Date.now() + '_' + i + '_' + j;
-                    const attemptsUsed = Math.floor(Math.random() * 4); // 0-3
-                    const attemptsRemaining = 3 - attemptsUsed;
-
-                    let ticketsThisReg = 1; // Base registration ticket
-
-                    const reg = {
-                        registration_id: rid,
-                        email: person.email,
-                        firstName: person.firstName,
-                        lastName: person.lastName,
-                        company: person.company,
-                        jobTitle: 'Manager',
-                        phone: '555-0100',
-                        companySize: '51-200',
-                        attempts_remaining: attemptsRemaining,
-                        tickets_this_registration: 0, // Will be calculated
-                        summary_email_sent: attemptsRemaining === 0,
-                        created_at: new Date(Date.now() - (5 - i) * 86400000 - j * 3600000).toISOString()
-                    };
-
-                    // Add base registration ticket
-                    ledger.push({
-                        id: 'ledger_reg_' + rid,
-                        email: person.email,
-                        registration_id: rid,
-                        delta: 1,
-                        reason: 'register',
-                        actor: 'system',
-                        timestamp: reg.created_at
-                    });
-
-                    // Add some scoring
-                    for (let k = 0; k < attemptsUsed; k++) {
-                        const outcomes = [
-                            { reason: 'bag_in', delta: 10 },
-                            { reason: 'board_hit', delta: 5 },
-                            { reason: 'miss', delta: 0 }
-                        ];
-                        const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
-
-                        ticketsThisReg += outcome.delta;
-
-                        ledger.push({
-                            id: 'ledger_score_' + rid + '_' + k,
-                            email: person.email,
-                            registration_id: rid,
-                            delta: outcome.delta,
-                            reason: outcome.reason,
-                            actor: ['staff', 'marketing'][Math.floor(Math.random() * 2)],
-                            timestamp: new Date(Date.parse(reg.created_at) + (k + 1) * 60000).toISOString()
-                        });
-                    }
-
-                    reg.tickets_this_registration = ticketsThisReg;
-                    registrations.push(reg);
-                }
-            });
-
-            // Add bonus for first 2 contacts
-            sampleData.slice(0, 2).forEach((person, i) => {
-                ledger.push({
-                    id: 'ledger_bonus_' + i,
-                    email: person.email,
-                    registration_id: registrations.find(r => r.email === person.email).registration_id,
-                    delta: 15,
-                    reason: 'bonus',
-                    actor: 'marketing',
-                    timestamp: new Date(Date.now() - (4 - i) * 86400000).toISOString()
-                });
-            });
-
-            saveContacts(contacts);
-            saveRegistrations(registrations);
-            saveLedger(ledger);
-
-            showToast('Demo data created successfully!', 'success');
-            searchRegistrations();
-            renderLedger();
-        }
-
-        function resetData() {
-            if (!confirm('This will DELETE all demo data. Are you sure?')) return;
-
-            localStorage.removeItem('ifa2026_contacts');
-            localStorage.removeItem('ifa2026_registrations');
-            localStorage.removeItem('ifa2026_ticket_ledger');
-            localStorage.removeItem('ifa2026_draws');
-            localStorage.removeItem('ifa2026_winners');
-
-            showToast('All data has been reset', 'info');
-
-            document.getElementById('resultsList').innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-icon">🔍</div>
-          <p>Search for registrations by name or email</p>
-        </div>
-      `;
-            document.getElementById('detailCard').classList.add('hidden');
-            renderLedger();
         }
 
         // ============ SEARCH ============
@@ -1353,53 +1277,13 @@
         }
 
         // ============ INIT ============
-        function initApp() {
-            renderLedger();
-
-            // Check for public registration data and migrate if exists
-            const publicReg = localStorage.getItem('ifa2026_registration');
-            if (publicReg) {
-                try {
-                    const data = JSON.parse(publicReg);
-                    const rid = localStorage.getItem('ifa2026_rid') || 'rid_' + Date.now();
-
-                    // Create contact
-                    ensureContact(data.email, `${data.firstName} ${data.lastName}`, data.company);
-
-                    // Create registration
-                    const registrations = getRegistrations();
-                    if (!registrations.find(r => r.registration_id === rid)) {
-                        registrations.push({
-                            registration_id: rid,
-                            email: data.email,
-                            firstName: data.firstName,
-                            lastName: data.lastName,
-                            company: data.company,
-                            jobTitle: data.jobTitle,
-                            phone: data.phone,
-                            companySize: data.companySize,
-                            attempts_remaining: 3,
-                            tickets_this_registration: 1,
-                            summary_email_sent: false,
-                            created_at: data.timestamp || new Date().toISOString()
-                        });
-                        saveRegistrations(registrations);
-
-                        // Add base registration ticket to ledger
-                        addLedgerEntry({
-                            email: data.email,
-                            registration_id: rid,
-                            delta: 1,
-                            reason: 'register',
-                            actor: 'system'
-                        });
-
-                        showToast('Public registration imported successfully', 'success');
-                        renderLedger();
-                    }
-                } catch (e) {
-                    console.error('Error importing public registration:', e);
-                }
+        async function initApp() {
+            try {
+                await loadState();
+                renderLedger();
+                searchRegistrations();
+            } catch (error) {
+                showToast('Failed to load data from Google Sheets', 'error');
             }
         }
     </script>

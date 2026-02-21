@@ -1,1 +1,1 @@
-{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/app/app.tsx","./src/app/routes.ts","./src/app/components/gamelogo.tsx","./src/app/components/registrationform.tsx","./src/app/pages/confirmation.tsx","./src/app/pages/home.tsx"],"version":"5.6.3"}
+{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/app/app.tsx","./src/app/routes.ts","./src/app/components/gamelogo.tsx","./src/app/components/registrationform.tsx","./src/app/pages/confirmation.tsx","./src/app/pages/home.tsx","./src/app/pages/internaldashboard.tsx","./src/app/pages/internaldraw.tsx"],"version":"5.6.3"}

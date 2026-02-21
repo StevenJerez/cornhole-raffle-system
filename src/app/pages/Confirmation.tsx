@@ -171,7 +171,7 @@ export default function Confirmation() {
         {/* Back to Home */}
         <div className="text-center">
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/ifa2026/')}
             className="text-[#4A9D9C] font-medium hover:underline"
             style={{ fontSize: '15px' }}
           >
