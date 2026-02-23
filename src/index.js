@@ -219,16 +219,18 @@ function seedStateFromParticipants(participants) {
       phone: '',
       companySize: '',
       attempts_remaining: attemptsRemaining,
-      tickets_this_registration: participant.points || 0,
+      tickets_this_registration: participant.points || 1,
       summary_email_sent: status === 'complete',
       created_at: now,
     });
+
+    const points = participant.points || 1;
 
     ledger.push({
       id: `ledger_import_${rid}`,
       email: participant.email,
       registration_id: rid,
-      delta: participant.points || 0,
+      delta: points,
       reason: 'import',
       actor: 'system',
       timestamp: now,
@@ -536,6 +538,55 @@ async function loadInternalState(env) {
   const hasFullData = registrations.length || contactsList.length || ledger.length || draws.length || winners.length;
   if (!hasFullData && participants.length) {
     return seedStateFromParticipants(participants);
+  }
+
+  // Merge any NEW participants that aren't already tracked in contacts/registrations
+  if (participants.length && hasFullData) {
+    const now = new Date().toISOString();
+    participants.forEach((participant) => {
+      if (!participant.email) return;
+      // Skip if this email already exists in contacts
+      if (contacts[participant.email]) return;
+
+      const rid = `rid_import_${participant.email.replace(/[^a-z0-9]/gi, '')}_${Date.now()}`;
+      const status = normalizeStatus(participant.status);
+      const attemptsRemaining = status === 'complete' ? 0 : 3;
+
+      contacts[participant.email] = {
+        email: participant.email,
+        name: `${participant.name || ''} ${participant.last_name || ''}`.trim(),
+        company: '',
+        email_bonus_applied: false,
+        created_at: now,
+      };
+
+      registrations.push({
+        registration_id: rid,
+        email: participant.email,
+        firstName: participant.name || '',
+        lastName: participant.last_name || '',
+        company: '',
+        jobTitle: '',
+        phone: '',
+        companySize: '',
+        attempts_remaining: attemptsRemaining,
+        tickets_this_registration: participant.points || 0,
+        summary_email_sent: status === 'complete',
+        created_at: now,
+      });
+
+      const points = participant.points || 1;
+
+      ledger.push({
+        id: `ledger_import_${rid}`,
+        email: participant.email,
+        registration_id: rid,
+        delta: points,
+        reason: 'import',
+        actor: 'system',
+        timestamp: now,
+      });
+    });
   }
 
   return { registrations, contacts, ledger, draws, winners };

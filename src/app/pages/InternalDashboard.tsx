@@ -569,7 +569,7 @@ const html = `
                 <nav>
                     <a href="/ifa2026/internal" class="active">Scoring Dashboard</a>
                     <a href="/ifa2026/internal-draw" id="drawLink">Live Draw</a>
-                  <button class="btn btn-secondary btn-sm" onclick="resetAllData()">Reset Data</button>
+                  <!-- <button class="btn btn-secondary btn-sm" onclick="resetAllData()">Reset Data</button> -->
                     <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
                 </nav>
             </div>

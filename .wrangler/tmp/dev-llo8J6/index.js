@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// .wrangler/tmp/bundle-Xv1P1m/checked-fetch.js
+// .wrangler/tmp/bundle-MeSLFG/checked-fetch.js
 var urls = /* @__PURE__ */ new Set();
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
@@ -231,15 +231,16 @@ function seedStateFromParticipants(participants) {
       phone: "",
       companySize: "",
       attempts_remaining: attemptsRemaining,
-      tickets_this_registration: participant.points || 0,
+      tickets_this_registration: participant.points || 1,
       summary_email_sent: status === "complete",
       created_at: now
     });
+    const points = participant.points || 1;
     ledger.push({
       id: `ledger_import_${rid}`,
       email: participant.email,
       registration_id: rid,
-      delta: participant.points || 0,
+      delta: points,
       reason: "import",
       actor: "system",
       timestamp: now
@@ -516,6 +517,47 @@ async function loadInternalState(env) {
   const hasFullData = registrations.length || contactsList.length || ledger.length || draws.length || winners.length;
   if (!hasFullData && participants.length) {
     return seedStateFromParticipants(participants);
+  }
+  if (participants.length && hasFullData) {
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    participants.forEach((participant) => {
+      if (!participant.email) return;
+      if (contacts[participant.email]) return;
+      const rid = `rid_import_${participant.email.replace(/[^a-z0-9]/gi, "")}_${Date.now()}`;
+      const status = normalizeStatus(participant.status);
+      const attemptsRemaining = status === "complete" ? 0 : 3;
+      contacts[participant.email] = {
+        email: participant.email,
+        name: `${participant.name || ""} ${participant.last_name || ""}`.trim(),
+        company: "",
+        email_bonus_applied: false,
+        created_at: now
+      };
+      registrations.push({
+        registration_id: rid,
+        email: participant.email,
+        firstName: participant.name || "",
+        lastName: participant.last_name || "",
+        company: "",
+        jobTitle: "",
+        phone: "",
+        companySize: "",
+        attempts_remaining: attemptsRemaining,
+        tickets_this_registration: participant.points || 0,
+        summary_email_sent: status === "complete",
+        created_at: now
+      });
+      const points = participant.points || 1;
+      ledger.push({
+        id: `ledger_import_${rid}`,
+        email: participant.email,
+        registration_id: rid,
+        delta: points,
+        reason: "import",
+        actor: "system",
+        timestamp: now
+      });
+    });
   }
   return { registrations, contacts, ledger, draws, winners };
 }
@@ -806,7 +848,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-Xv1P1m/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-MeSLFG/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -838,7 +880,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-Xv1P1m/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-MeSLFG/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

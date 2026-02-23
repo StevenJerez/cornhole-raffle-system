@@ -12,6 +12,7 @@ declare global {
     redrawTier?: (tier: string) => void;
     updateStatus?: (tier: string) => void;
     exportWinnersCSV?: () => void;
+    refreshData?: () => void;
   }
 }
 
@@ -534,6 +535,7 @@ const html = `
                 <nav>
                     <a href="/ifa2026/internal">Scoring Dashboard</a>
                     <a href="/ifa2026/internal-draw" class="active">Live Draw</a>
+                    <!-- <button class="btn btn-secondary btn-sm" onclick="refreshData()">🔄 Refresh Data</button> -->
                     <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
                 </nav>
             </div>
@@ -569,8 +571,8 @@ const html = `
                 <div class="mt-20">
                     <button class="btn btn-primary btn-large" onclick="startDraw()">Start Draw (Snapshot
                         Totals)</button>
-                    <button class="btn btn-secondary" onclick="resetDrawUI()" style="margin-left: 12px;">Reset
-                        Current Draw UI</button>
+                    <!-- <button class="btn btn-secondary" onclick="resetDrawUI()" style="margin-left: 12px;">Reset
+                        Current Draw UI</button> -->
                 </div>
             </div>
 
@@ -1135,6 +1137,17 @@ export default function InternalDraw() {
       showToast("Winners CSV exported successfully", "success");
     };
 
+    const refreshData = async () => {
+      try {
+        showToast("Refreshing data...", "info");
+        await loadState();
+        renderTotals();
+        showToast("Data refreshed", "success");
+      } catch (error) {
+        showToast("Failed to refresh data", "error");
+      }
+    };
+
     const updateRoleUI = () => {
       const badge = document.getElementById("roleBadge");
       if (badge) {
@@ -1197,6 +1210,7 @@ export default function InternalDraw() {
 
     window.login = login;
     window.logout = logout;
+    window.refreshData = refreshData;
     window.startDraw = startDraw;
     window.resetDrawUI = resetDrawUI;
     window.pickWinner = pickWinner;
@@ -1218,6 +1232,7 @@ export default function InternalDraw() {
     return () => {
       window.login = undefined;
       window.logout = undefined;
+      window.refreshData = undefined;
       window.startDraw = undefined;
       window.resetDrawUI = undefined;
       window.pickWinner = undefined;
