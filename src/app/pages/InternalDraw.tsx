@@ -321,19 +321,14 @@ const html = `
         border: 3px solid;
     }
 
-    .tier-card.tier-3rd {
-        background: #fef3c7;
-        border-color: #f59e0b;
-    }
-
-    .tier-card.tier-2nd {
-        background: #dbeafe;
-        border-color: #3b82f6;
-    }
-
-    .tier-card.tier-1st {
+    .tier-card.tier-grand {
         background: #dcfce7;
         border-color: #10b981;
+    }
+
+    .tier-card.tier-runner {
+        background: #dbeafe;
+        border-color: #3b82f6;
     }
 
     .tier-header {
@@ -347,16 +342,12 @@ const html = `
         margin-bottom: 8px;
     }
 
-    .tier-3rd .tier-title {
-        color: #92400e;
-    }
-
-    .tier-2nd .tier-title {
-        color: #1e40af;
-    }
-
-    .tier-1st .tier-title {
+    .tier-grand .tier-title {
         color: #166534;
+    }
+
+    .tier-runner .tier-title {
+        color: #1e40af;
     }
 
     .tier-prize {
@@ -582,24 +573,20 @@ const html = `
             </div>
 
             <div class="tier-grid" id="tierGrid" style="display: none;">
-                <div class="tier-card tier-3rd">
+                <div class="tier-card tier-grand" style="grid-column: 1 / -1;">
                     <div class="tier-header">
-                        <div class="tier-title">🥉 3rd Place</div>
-                        <div class="tier-prize">15% off annual plan</div>
+                        <div class="tier-title">🏆 Grand Prize</div>
+                        <div class="tier-prize">Meta Glasses + 100 DISC Credits</div>
                     </div>
-                    <div class="winner-display" id="winner3rd">
+                    <div class="winner-display" id="winnerprize-grand">
                         <div class="empty-winner">No winner selected</div>
                     </div>
                     <div class="tier-actions">
-                        <button class="btn btn-warning btn-large" onclick="pickWinner('3rd')">Pick Winner
-                            (Weighted)</button>
-                        <button class="btn btn-success" onclick="confirmWinner('3rd')" id="confirm3rd"
-                            disabled>Confirm Winner</button>
-                        <button class="btn btn-secondary" onclick="markUnreachable('3rd')" id="unreachable3rd"
-                            disabled>Mark Unreachable</button>
-                        <button class="btn btn-primary" onclick="redrawTier('3rd')" id="redraw3rd" disabled>Redraw
-                            This Tier</button>
-                        <select class="status-select" id="status3rd" onchange="updateStatus('3rd')" disabled>
+                        <button class="btn btn-warning btn-large" onclick="pickWinner('prize-grand')">Pick Winner (Weighted)</button>
+                        <button class="btn btn-success" onclick="confirmWinner('prize-grand')" id="confirmprize-grand" disabled>Confirm Winner</button>
+                        <button class="btn btn-secondary" onclick="markUnreachable('prize-grand')" id="unreachableprize-grand" disabled>Mark Unreachable</button>
+                        <button class="btn btn-primary" onclick="redrawTier('prize-grand')" id="redrawprize-grand" disabled>Redraw</button>
+                        <select class="status-select" id="statusprize-grand" onchange="updateStatus('prize-grand')" disabled>
                             <option value="pending">Pending</option>
                             <option value="contacted">Contacted</option>
                             <option value="confirmed">Confirmed</option>
@@ -608,24 +595,20 @@ const html = `
                     </div>
                 </div>
 
-                <div class="tier-card tier-2nd">
+                <div class="tier-card tier-runner">
                     <div class="tier-header">
-                        <div class="tier-title">🥈 2nd Place</div>
-                        <div class="tier-prize">30% off annual plan</div>
+                        <div class="tier-title">🎁 Prize 2</div>
+                        <div class="tier-prize">1,250 DISC Credits ($6,750 value)</div>
                     </div>
-                    <div class="winner-display" id="winner2nd">
+                    <div class="winner-display" id="winnerprize-2">
                         <div class="empty-winner">No winner selected</div>
                     </div>
                     <div class="tier-actions">
-                        <button class="btn btn-warning btn-large" onclick="pickWinner('2nd')">Pick Winner
-                            (Weighted)</button>
-                        <button class="btn btn-success" onclick="confirmWinner('2nd')" id="confirm2nd"
-                            disabled>Confirm Winner</button>
-                        <button class="btn btn-secondary" onclick="markUnreachable('2nd')" id="unreachable2nd"
-                            disabled>Mark Unreachable</button>
-                        <button class="btn btn-primary" onclick="redrawTier('2nd')" id="redraw2nd" disabled>Redraw
-                            This Tier</button>
-                        <select class="status-select" id="status2nd" onchange="updateStatus('2nd')" disabled>
+                        <button class="btn btn-warning btn-large" onclick="pickWinner('prize-2')">Pick Winner (Weighted)</button>
+                        <button class="btn btn-success" onclick="confirmWinner('prize-2')" id="confirmprize-2" disabled>Confirm Winner</button>
+                        <button class="btn btn-secondary" onclick="markUnreachable('prize-2')" id="unreachableprize-2" disabled>Mark Unreachable</button>
+                        <button class="btn btn-primary" onclick="redrawTier('prize-2')" id="redrawprize-2" disabled>Redraw</button>
+                        <select class="status-select" id="statusprize-2" onchange="updateStatus('prize-2')" disabled>
                             <option value="pending">Pending</option>
                             <option value="contacted">Contacted</option>
                             <option value="confirmed">Confirmed</option>
@@ -634,24 +617,86 @@ const html = `
                     </div>
                 </div>
 
-                <div class="tier-card tier-1st">
+                <div class="tier-card tier-runner">
                     <div class="tier-header">
-                        <div class="tier-title">🥇 1st Place</div>
-                        <div class="tier-prize">Meta Glasses + 30% off</div>
+                        <div class="tier-title">🎁 Prize 3</div>
+                        <div class="tier-prize">1,250 DISC Credits ($6,750 value)</div>
                     </div>
-                    <div class="winner-display" id="winner1st">
+                    <div class="winner-display" id="winnerprize-3">
                         <div class="empty-winner">No winner selected</div>
                     </div>
                     <div class="tier-actions">
-                        <button class="btn btn-warning btn-large" onclick="pickWinner('1st')">Pick Winner
-                            (Weighted)</button>
-                        <button class="btn btn-success" onclick="confirmWinner('1st')" id="confirm1st"
-                            disabled>Confirm Winner</button>
-                        <button class="btn btn-secondary" onclick="markUnreachable('1st')" id="unreachable1st"
-                            disabled>Mark Unreachable</button>
-                        <button class="btn btn-primary" onclick="redrawTier('1st')" id="redraw1st" disabled>Redraw
-                            This Tier</button>
-                        <select class="status-select" id="status1st" onchange="updateStatus('1st')" disabled>
+                        <button class="btn btn-warning btn-large" onclick="pickWinner('prize-3')">Pick Winner (Weighted)</button>
+                        <button class="btn btn-success" onclick="confirmWinner('prize-3')" id="confirmprize-3" disabled>Confirm Winner</button>
+                        <button class="btn btn-secondary" onclick="markUnreachable('prize-3')" id="unreachableprize-3" disabled>Mark Unreachable</button>
+                        <button class="btn btn-primary" onclick="redrawTier('prize-3')" id="redrawprize-3" disabled>Redraw</button>
+                        <select class="status-select" id="statusprize-3" onchange="updateStatus('prize-3')" disabled>
+                            <option value="pending">Pending</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="unreachable">Unreachable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tier-card tier-runner">
+                    <div class="tier-header">
+                        <div class="tier-title">🎁 Prize 4</div>
+                        <div class="tier-prize">1,250 DISC Credits ($6,750 value)</div>
+                    </div>
+                    <div class="winner-display" id="winnerprize-4">
+                        <div class="empty-winner">No winner selected</div>
+                    </div>
+                    <div class="tier-actions">
+                        <button class="btn btn-warning btn-large" onclick="pickWinner('prize-4')">Pick Winner (Weighted)</button>
+                        <button class="btn btn-success" onclick="confirmWinner('prize-4')" id="confirmprize-4" disabled>Confirm Winner</button>
+                        <button class="btn btn-secondary" onclick="markUnreachable('prize-4')" id="unreachableprize-4" disabled>Mark Unreachable</button>
+                        <button class="btn btn-primary" onclick="redrawTier('prize-4')" id="redrawprize-4" disabled>Redraw</button>
+                        <select class="status-select" id="statusprize-4" onchange="updateStatus('prize-4')" disabled>
+                            <option value="pending">Pending</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="unreachable">Unreachable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tier-card tier-runner">
+                    <div class="tier-header">
+                        <div class="tier-title">🎁 Prize 5</div>
+                        <div class="tier-prize">1,250 DISC Credits ($6,750 value)</div>
+                    </div>
+                    <div class="winner-display" id="winnerprize-5">
+                        <div class="empty-winner">No winner selected</div>
+                    </div>
+                    <div class="tier-actions">
+                        <button class="btn btn-warning btn-large" onclick="pickWinner('prize-5')">Pick Winner (Weighted)</button>
+                        <button class="btn btn-success" onclick="confirmWinner('prize-5')" id="confirmprize-5" disabled>Confirm Winner</button>
+                        <button class="btn btn-secondary" onclick="markUnreachable('prize-5')" id="unreachableprize-5" disabled>Mark Unreachable</button>
+                        <button class="btn btn-primary" onclick="redrawTier('prize-5')" id="redrawprize-5" disabled>Redraw</button>
+                        <select class="status-select" id="statusprize-5" onchange="updateStatus('prize-5')" disabled>
+                            <option value="pending">Pending</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="unreachable">Unreachable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tier-card tier-runner">
+                    <div class="tier-header">
+                        <div class="tier-title">🎁 Prize 6</div>
+                        <div class="tier-prize">1,250 DISC Credits ($6,750 value)</div>
+                    </div>
+                    <div class="winner-display" id="winnerprize-6">
+                        <div class="empty-winner">No winner selected</div>
+                    </div>
+                    <div class="tier-actions">
+                        <button class="btn btn-warning btn-large" onclick="pickWinner('prize-6')">Pick Winner (Weighted)</button>
+                        <button class="btn btn-success" onclick="confirmWinner('prize-6')" id="confirmprize-6" disabled>Confirm Winner</button>
+                        <button class="btn btn-secondary" onclick="markUnreachable('prize-6')" id="unreachableprize-6" disabled>Mark Unreachable</button>
+                        <button class="btn btn-primary" onclick="redrawTier('prize-6')" id="redrawprize-6" disabled>Redraw</button>
+                        <select class="status-select" id="statusprize-6" onchange="updateStatus('prize-6')" disabled>
                             <option value="pending">Pending</option>
                             <option value="contacted">Contacted</option>
                             <option value="confirmed">Confirmed</option>
@@ -676,11 +721,9 @@ export default function InternalDraw() {
   useEffect(() => {
     let currentDraw: any = null;
     let drawSnapshot: any = null;
-    let selectedWinners: Record<string, any> = {
-      "3rd": null,
-      "2nd": null,
-      "1st": null,
-    };
+    const PRIZE_KEYS = ["prize-grand", "prize-2", "prize-3", "prize-4", "prize-5", "prize-6"];
+    let selectedWinners: Record<string, any> = {};
+    PRIZE_KEYS.forEach((k) => { selectedWinners[k] = null; });
     let confirmedWinners = new Set<string>();
     let state: any = {
       contacts: {},
@@ -695,9 +738,12 @@ export default function InternalDraw() {
       : "/api/internal";
 
     const prizes: Record<string, string> = {
-      "3rd": "15% off annual plan",
-      "2nd": "30% off annual plan",
-      "1st": "Meta Glasses + 30% off",
+      "prize-grand": "Meta Glasses + 100 DISC Credits",
+      "prize-2": "1,250 DISC Credits ($6,750 value)",
+      "prize-3": "1,250 DISC Credits ($6,750 value)",
+      "prize-4": "1,250 DISC Credits ($6,750 value)",
+      "prize-5": "1,250 DISC Credits ($6,750 value)",
+      "prize-6": "1,250 DISC Credits ($6,750 value)",
     };
 
     const getAuthToken = () => sessionStorage.getItem("ifa2026_admin_token");
@@ -891,7 +937,8 @@ export default function InternalDraw() {
 
       currentDraw = null;
       drawSnapshot = null;
-      selectedWinners = { "3rd": null, "2nd": null, "1st": null };
+      selectedWinners = {};
+      PRIZE_KEYS.forEach((k) => { selectedWinners[k] = null; });
       confirmedWinners.clear();
 
       document.getElementById("drawInfo")?.classList.add("hidden");
@@ -904,7 +951,7 @@ export default function InternalDraw() {
         exportCard.style.display = "none";
       }
 
-      ["3rd", "2nd", "1st"].forEach((tier) => {
+      PRIZE_KEYS.forEach((tier) => {
         const winnerDisplay = document.getElementById(`winner${tier}`);
         if (winnerDisplay) {
           winnerDisplay.innerHTML = '<div class="empty-winner">No winner selected</div>';
@@ -939,9 +986,23 @@ export default function InternalDraw() {
     const getEligiblePool = (tier: string) => {
       if (!drawSnapshot) return [];
 
-      const pool = Object.values(drawSnapshot).filter((p: any) => {
-        if (confirmedWinners.has(p.email)) return false;
+      // Collect all emails that have already won any prize (confirmed or selected)
+      const alreadyWonEmails = new Set<string>();
+      PRIZE_KEYS.forEach((key) => {
+        if (key === tier) return; // skip the current tier being drawn
+        const w = selectedWinners[key];
+        if (w && w.status !== "unreachable") {
+          alreadyWonEmails.add(w.email);
+        }
+      });
+      // Also include confirmed winners
+      confirmedWinners.forEach((email) => alreadyWonEmails.add(email));
 
+      const pool = Object.values(drawSnapshot).filter((p: any) => {
+        // Exclude anyone who already won another prize
+        if (alreadyWonEmails.has(p.email)) return false;
+
+        // Exclude unreachable winner for THIS tier (so redraw skips them)
         const currentWinner = selectedWinners[tier];
         if (currentWinner && currentWinner.status === "unreachable" && currentWinner.email === p.email) {
           return false;
